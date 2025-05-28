@@ -12,7 +12,7 @@ struct User : ProducesCardViewModel {
     let name : String
     let age : Int
     let profession : String
-    let imageName : String
+    let imageNames : [String]
     
     func toCardViewModel() -> CardViewModel {
         let attributedString = NSMutableAttributedString(string: name, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 32,weight: .heavy)])
@@ -22,7 +22,7 @@ struct User : ProducesCardViewModel {
         attributedString.append(NSAttributedString(string: "\n\(profession)", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20,weight: .regular)]))
 
         
-        return CardViewModel(imageName: imageName, attributedString: attributedString, textAlignment: .left)
+        return CardViewModel(imageNames: imageNames, attributedString: attributedString, textAlignment: .left)
     }
 }
 
