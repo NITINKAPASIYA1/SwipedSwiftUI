@@ -14,10 +14,13 @@ class HomeController: UIViewController {
     let bottomStackView = HomeBottomControlsStackView()
     
     
-    let cardViewModel = [
-        User(name: "Nitin", age: 25, profession: "Software Engineer", imageName: "lady5c").toCardViewModel(),
-        User(name: "Alice", age: 28, profession: "Designer", imageName: "lady4c").toCardViewModel(),
-    ]
+    let cardViewModel = ([
+        User(name: "Nitin", age: 25, profession: "Software Engineer", imageName: "lady5c"),
+        User(name: "Alice", age: 28, profession: "Designer", imageName: "lady4c"),
+        Advertiser(title: "Slide Out Menu", brandName: "Lets Create the Future app", posterPhotoName: "lady5c")
+    ] as [ProducesCardViewModel]).map { producer in
+        return producer.toCardViewModel()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,10 +37,7 @@ class HomeController: UIViewController {
         
         cardViewModel.forEach { value in
             let cardView = CardView(frame: .zero)
-            cardView.imageView.image = UIImage(named: value.imageName)
-            cardView.informationLabel.attributedText = value.attributedString
-            cardView.informationLabel.textAlignment = value.textAlignment
-            
+            cardView.cardViewModel = value
             
             cardsDeckView.addSubview(cardView)
             cardView.fillSuperview()
