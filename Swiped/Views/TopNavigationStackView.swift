@@ -18,7 +18,11 @@ class TopNavigationStackView: UIStackView {
         super.init(frame: frame)
         heightAnchor.constraint(equalToConstant: 80).isActive = true
         fireImageView.contentMode = .scaleAspectFit
+        fireImageView.translatesAutoresizingMaskIntoConstraints = false
+        fireImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        fireImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
+    
         settingsButton.setImage(#imageLiteral(resourceName: "top_left_profile").withRenderingMode(.alwaysOriginal), for: .normal)
         messageButton.setImage(#imageLiteral(resourceName: "top_right_messages").withRenderingMode(.alwaysOriginal), for: .normal)
         
@@ -37,3 +41,4 @@ class TopNavigationStackView: UIStackView {
     }
 
 }
+

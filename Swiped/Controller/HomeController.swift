@@ -25,14 +25,18 @@ class HomeController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupLayout()
-        
         setupDummyCards()
+        topStackView.settingsButton.addTarget(self, action: #selector(handleSettings), for: .touchUpInside)
+        
         
     }
     
     //MARK: FilePrivate
+    
+    @objc fileprivate func handleSettings() {
+        print("Show settings")
+    }
     
     fileprivate func setupDummyCards() {
         
@@ -45,6 +49,7 @@ class HomeController: UIViewController {
             cardView.translatesAutoresizingMaskIntoConstraints = false
             cardView.layer.masksToBounds = true
             cardView.layer.cornerRadius = 10
+            view.backgroundColor = .systemBackground
         }
        
     }
@@ -57,6 +62,7 @@ class HomeController: UIViewController {
         
         // Constraints
         overallStackView.anchor(top: view.safeAreaLayoutGuide.topAnchor, leading: view.leadingAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, trailing: view.trailingAnchor)
+        
         overallStackView.isLayoutMarginsRelativeArrangement = true
         overallStackView.layoutMargins = .init(top: 0, left: 10, bottom: 0, right: 10)
         overallStackView.bringSubviewToFront(cardsDeckView)
