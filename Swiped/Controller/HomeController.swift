@@ -28,8 +28,6 @@ class HomeController: UIViewController {
         setupLayout()
         setupDummyCards()
         topStackView.settingsButton.addTarget(self, action: #selector(handleSettings), for: .touchUpInside)
-        
-        
     }
     
     //MARK: FilePrivate

@@ -22,7 +22,7 @@ class RegistrationController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFill
         button.layer.borderWidth = 1
         button.layer.borderColor = UIColor.lightGray.cgColor
-        button.addTarget(RegistrationController.self, action: #selector(handleSelectPhoto), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleSelectPhoto), for: .touchUpInside)
         return button
     }()
     
@@ -31,7 +31,7 @@ class RegistrationController: UIViewController {
         tf.placeholder = "Enter your name"
         tf.backgroundColor = .white
         tf.keyboardType = .default
-        tf.addTarget(RegistrationController.self, action: #selector(handleTextChange), for: .editingChanged)
+        tf.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return tf
     }()
     
@@ -40,7 +40,7 @@ class RegistrationController: UIViewController {
         tf.placeholder = "Enter email"
         tf.keyboardType = .emailAddress
         tf.backgroundColor = .white
-        tf.addTarget(RegistrationController.self, action: #selector(handleTextChange), for: .editingChanged)
+        tf.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return tf
     }()
     
@@ -49,7 +49,7 @@ class RegistrationController: UIViewController {
         tf.placeholder = "Enter password"
         tf.isSecureTextEntry = true
         tf.backgroundColor = .white
-        tf.addTarget(RegistrationController.self, action: #selector(handleTextChange), for: .editingChanged)
+        tf.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return tf
     }()
     
@@ -62,7 +62,7 @@ class RegistrationController: UIViewController {
         button.isEnabled = false
         button.layer.cornerRadius = 25
         button.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        button.addTarget(RegistrationController.self, action: #selector(handleRegister), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleRegister), for: .touchUpInside)
         return button
     }()
     
@@ -71,7 +71,7 @@ class RegistrationController: UIViewController {
         button.setTitle("Already have an account? Sign In", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        button.addTarget(RegistrationController.self, action: #selector(handleGoToLogin), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleGoToLogin), for: .touchUpInside)
         return button
     }()
     
@@ -97,7 +97,7 @@ class RegistrationController: UIViewController {
     
     fileprivate func setupGradientLayer() {
         let topColor = #colorLiteral(red: 0.9921568627, green: 0.3568627451, blue: 0.3725490196, alpha: 1)
-        let bottomColor = #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1)
+        let bottomColor = #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 1)
         
         gradientLayer.colors = [topColor.cgColor, bottomColor.cgColor]
         gradientLayer.locations = [0, 1]
@@ -108,7 +108,6 @@ class RegistrationController: UIViewController {
     fileprivate func setupLayout() {
         view.addSubview(photoButton)
         photoButton.translatesAutoresizingMaskIntoConstraints = false
-        
         NSLayoutConstraint.activate([
             photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             photoButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
@@ -163,7 +162,6 @@ class RegistrationController: UIViewController {
         present(imagePickerController, animated: true)
     }
     
-    // For changing the Register Color when field are filled
     @objc fileprivate func handleTextChange(textField: UITextField) {
         // Handle text field changes for form validation
         if nameTextField.text != "" && emailTextField.text != "" && passwordTextField.text != "" {
@@ -205,6 +203,11 @@ class RegistrationController: UIViewController {
     @objc fileprivate func handleTapDismiss() {
         view.endEditing(true)
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+    }
 }
 
 // MARK: - UIImagePickerControllerDelegate
@@ -218,33 +221,4 @@ extension RegistrationController: UIImagePickerControllerDelegate, UINavigationC
     }
 }
 
-// MARK: - CustomTextField
 
-class CustomTextField: UITextField {
-    let padding: CGFloat
-    
-    init(padding: CGFloat) {
-        self.padding = padding
-        super.init(frame: .zero)
-        self.layer.cornerRadius = 16
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // yeh hoti h textField ki padding text ke beech yeh start mein
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: padding, dy: 0)
-    }
-    
-    // yeh hoti h textField padding text ke end mein
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        return bounds.insetBy(dx: padding, dy: 0)
-    }
-    
-    // is for the height of textField
-    override var intrinsicContentSize: CGSize {
-        return .init(width: 0, height: 50)
-    }
-}
