@@ -35,7 +35,10 @@ class HomeController: UIViewController {
     //MARK: FilePrivate
     
     @objc fileprivate func handleSettings() {
-        print("Show settings")
+        let registarionController = RegistrationController()
+        registarionController.modalPresentationStyle = .fullScreen
+        present(registarionController, animated: true)
+        
     }
     
     fileprivate func setupDummyCards() {

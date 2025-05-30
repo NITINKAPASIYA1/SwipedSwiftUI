@@ -1,0 +1,250 @@
+//
+//  RegistrationController.swift
+//  Swiped
+//
+//  Created by Nitin on 30/05/25.
+//
+
+import UIKit
+
+class RegistrationController: UIViewController {
+    
+    // MARK: - UI Components
+    
+    private let photoButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Select Photo", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .heavy)
+        button.backgroundColor = .white
+        button.setTitleColor(.gray, for: .normal)
+        button.layer.cornerRadius = 16
+        button.clipsToBounds = true
+        button.imageView?.contentMode = .scaleAspectFill
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.lightGray.cgColor
+        button.addTarget(RegistrationController.self, action: #selector(handleSelectPhoto), for: .touchUpInside)
+        return button
+    }()
+    
+    private let nameTextField: CustomTextField = {
+        let tf = CustomTextField(padding: 16)
+        tf.placeholder = "Enter your name"
+        tf.backgroundColor = .white
+        tf.keyboardType = .default
+        tf.addTarget(RegistrationController.self, action: #selector(handleTextChange), for: .editingChanged)
+        return tf
+    }()
+    
+    private let emailTextField: CustomTextField = {
+        let tf = CustomTextField(padding: 16)
+        tf.placeholder = "Enter email"
+        tf.keyboardType = .emailAddress
+        tf.backgroundColor = .white
+        tf.addTarget(RegistrationController.self, action: #selector(handleTextChange), for: .editingChanged)
+        return tf
+    }()
+    
+    private let passwordTextField: CustomTextField = {
+        let tf = CustomTextField(padding: 16)
+        tf.placeholder = "Enter password"
+        tf.isSecureTextEntry = true
+        tf.backgroundColor = .white
+        tf.addTarget(RegistrationController.self, action: #selector(handleTextChange), for: .editingChanged)
+        return tf
+    }()
+    
+    private let registerButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Register", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .heavy)
+        button.backgroundColor = .lightGray
+        button.isEnabled = false
+        button.layer.cornerRadius = 25
+        button.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        button.addTarget(RegistrationController.self, action: #selector(handleRegister), for: .touchUpInside)
+        return button
+    }()
+    
+    private let goToLoginButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Already have an account? Sign In", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        button.addTarget(RegistrationController.self, action: #selector(handleGoToLogin), for: .touchUpInside)
+        return button
+    }()
+    
+    private let gradientLayer = CAGradientLayer()
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupGradientLayer()
+        setupLayout()
+        setupNotificationObservers()
+        setupTapGesture()
+        setupRegistrationViewModelObserver()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        gradientLayer.frame = view.bounds
+    }
+    
+    // MARK: - Setup
+    
+    fileprivate func setupGradientLayer() {
+        let topColor = #colorLiteral(red: 0.9921568627, green: 0.3568627451, blue: 0.3725490196, alpha: 1)
+        let bottomColor = #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1)
+        
+        gradientLayer.colors = [topColor.cgColor, bottomColor.cgColor]
+        gradientLayer.locations = [0, 1]
+        view.layer.addSublayer(gradientLayer)
+        gradientLayer.frame = view.bounds
+    }
+    
+    fileprivate func setupLayout() {
+        view.addSubview(photoButton)
+        photoButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            photoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            photoButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            photoButton.widthAnchor.constraint(equalToConstant: 200),
+            photoButton.heightAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        let stackView = UIStackView(arrangedSubviews: [
+            nameTextField,
+            emailTextField,
+            passwordTextField,
+            registerButton
+        ])
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        
+        view.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: photoButton.bottomAnchor, constant: 32),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+        ])
+        
+        view.addSubview(goToLoginButton)
+        goToLoginButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            goToLoginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            goToLoginButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+    }
+    
+    fileprivate func setupRegistrationViewModelObserver() {
+        // Implement your view model observation logic here
+        // This would handle form validation
+    }
+    
+    fileprivate func setupNotificationObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    fileprivate func setupTapGesture() {
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapDismiss)))
+    }
+    
+    // MARK: - Actions
+    
+    @objc fileprivate func handleSelectPhoto() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        present(imagePickerController, animated: true)
+    }
+    
+    // For changing the Register Color when field are filled
+    @objc fileprivate func handleTextChange(textField: UITextField) {
+        // Handle text field changes for form validation
+        if nameTextField.text != "" && emailTextField.text != "" && passwordTextField.text != "" {
+            registerButton.isEnabled = true
+            registerButton.backgroundColor = #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1)
+        } else {
+            registerButton.isEnabled = false
+            registerButton.backgroundColor = .lightGray
+        }
+    }
+    
+    @objc fileprivate func handleRegister() {
+        // Implement registration logic
+        print("Register button tapped")
+    }
+    
+    @objc fileprivate func handleGoToLogin() {
+        // Navigate to login screen
+        dismiss(animated: true)
+    }
+    
+    @objc fileprivate func handleKeyboardShow(notification: Notification) {
+        guard let value = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let keyboardFrame = value.cgRectValue
+        
+        // Find the gap between register button and keyboard
+        let bottomSpace = view.frame.height - (registerButton.frame.origin.y + registerButton.frame.height)
+        let difference = keyboardFrame.height - bottomSpace
+        
+        if difference > 0 {
+            view.transform = CGAffineTransform(translationX: 0, y: -difference - 16)
+        }
+    }
+    
+    @objc fileprivate func handleKeyboardHide() {
+        view.transform = .identity
+    }
+    
+    @objc fileprivate func handleTapDismiss() {
+        view.endEditing(true)
+    }
+}
+
+// MARK: - UIImagePickerControllerDelegate
+
+extension RegistrationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let selectedImage = info[.originalImage] as? UIImage
+        photoButton.setImage(selectedImage?.withRenderingMode(.alwaysOriginal), for: .normal)
+        photoButton.setTitle("", for: .normal)
+        dismiss(animated: true)
+    }
+}
+
+// MARK: - CustomTextField
+
+class CustomTextField: UITextField {
+    let padding: CGFloat
+    
+    init(padding: CGFloat) {
+        self.padding = padding
+        super.init(frame: .zero)
+        self.layer.cornerRadius = 16
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // yeh hoti h textField ki padding text ke beech yeh start mein
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: padding, dy: 0)
+    }
+    
+    // yeh hoti h textField padding text ke end mein
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.insetBy(dx: padding, dy: 0)
+    }
+    
+    // is for the height of textField
+    override var intrinsicContentSize: CGSize {
+        return .init(width: 0, height: 50)
+    }
+}
