@@ -16,24 +16,27 @@ class TopNavigationStackView: UIStackView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         heightAnchor.constraint(equalToConstant: 80).isActive = true
+        
         fireImageView.contentMode = .scaleAspectFit
-        fireImageView.translatesAutoresizingMaskIntoConstraints = false
-        fireImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        fireImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         
-    
-        settingsButton.setImage(#imageLiteral(resourceName: "top_left_profile").withRenderingMode(.alwaysOriginal), for: .normal)
-        messageButton.setImage(#imageLiteral(resourceName: "top_right_messages").withRenderingMode(.alwaysOriginal), for: .normal)
+        settingsButton.setImage(UIImage(systemName: "gear")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        messageButton.setImage(UIImage(systemName: "message")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        messageButton.tintColor = .gray
+       
         
-        [settingsButton, UIView(), fireImageView, UIView(), messageButton].forEach { (v) in
-            addArrangedSubview(v)
+        [settingsButton, UIView(), fireImageView, UIView(), messageButton].forEach { view in
+            addArrangedSubview(view)
         }
         
         distribution = .equalCentering
-        
         isLayoutMarginsRelativeArrangement = true
         layoutMargins = .init(top: 0, left: 16, bottom: 0, right: 16)
+        
+        // Instead, set constraints that work with the parent view's height
+        fireImageView.widthAnchor.constraint(equalTo: fireImageView.heightAnchor).isActive = true
+        fireImageView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     required init(coder: NSCoder) {

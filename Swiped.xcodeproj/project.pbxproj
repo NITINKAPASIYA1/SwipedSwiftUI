@@ -6,8 +6,16 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		94EA645A2DE9C51700D1255E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 94EA64592DE9C51700D1255E /* GoogleService-Info.plist */; };
+		94EA645D2DE9C65600D1255E /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 94EA645C2DE9C65600D1255E /* FirebaseAuth */; };
+		94EA64612DE9C65600D1255E /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 94EA64602DE9C65600D1255E /* FirebaseFirestore */; };
+		94EA64662DE9C67700D1255E /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 94EA64652DE9C67700D1255E /* JGProgressHUD */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		946A77132DE0915000835E02 /* Swiped.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Swiped.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		94EA64592DE9C51700D1255E /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +44,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94EA645D2DE9C65600D1255E /* FirebaseAuth in Frameworks */,
+				94EA64612DE9C65600D1255E /* FirebaseFirestore in Frameworks */,
+				94EA64662DE9C67700D1255E /* JGProgressHUD in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +56,7 @@
 		946A770A2DE0915000835E02 = {
 			isa = PBXGroup;
 			children = (
+				94EA64592DE9C51700D1255E /* GoogleService-Info.plist */,
 				946A77152DE0915000835E02 /* Swiped */,
 				946A77142DE0915000835E02 /* Products */,
 			);
@@ -78,6 +90,9 @@
 			);
 			name = Swiped;
 			packageProductDependencies = (
+				94EA645C2DE9C65600D1255E /* FirebaseAuth */,
+				94EA64602DE9C65600D1255E /* FirebaseFirestore */,
+				94EA64652DE9C67700D1255E /* JGProgressHUD */,
 			);
 			productName = Swiped;
 			productReference = 946A77132DE0915000835E02 /* Swiped.app */;
@@ -107,6 +122,10 @@
 			);
 			mainGroup = 946A770A2DE0915000835E02;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				94EA645B2DE9C65600D1255E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				94EA64642DE9C67700D1255E /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 946A77142DE0915000835E02 /* Products */;
 			projectDirPath = "";
@@ -122,6 +141,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94EA645A2DE9C51700D1255E /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +355,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		94EA645B2DE9C65600D1255E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.13.0;
+			};
+		};
+		94EA64642DE9C67700D1255E /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		94EA645C2DE9C65600D1255E /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 94EA645B2DE9C65600D1255E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		94EA64602DE9C65600D1255E /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 94EA645B2DE9C65600D1255E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		94EA64652DE9C67700D1255E /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 94EA64642DE9C67700D1255E /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 946A770B2DE0915000835E02 /* Project object */;
 }

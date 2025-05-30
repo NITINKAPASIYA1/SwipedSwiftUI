@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import FirebaseAuth
+import JGProgressHUD
 
 class RegistrationController: UIViewController {
     
@@ -140,9 +142,26 @@ class RegistrationController: UIViewController {
         ])
     }
     
+    let registrationViewModel = RegistrationViewModel()
+    
     fileprivate func setupRegistrationViewModelObserver() {
-        // Implement your view model observation logic here
-        // This would handle form validation
+        registrationViewModel.isFormValidObserver = { [weak self] isFormValid in
+            guard let self = self else { return }
+            
+            print("Form is changing to", isFormValid)
+            self.registerButton.isEnabled = isFormValid
+            self.registerButton.backgroundColor = isFormValid ?
+                #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1) : .lightGray
+        }
+    }
+
+    @objc fileprivate func handleTextChange(textField: UITextField) {
+        // Update view model with text field values
+        registrationViewModel.fullName = nameTextField.text ?? ""
+        registrationViewModel.email = emailTextField.text ?? ""
+        registrationViewModel.password = passwordTextField.text ?? ""
+        
+        // The button state will be updated via the isFormValidObserver
     }
     
     fileprivate func setupNotificationObservers() {
@@ -162,20 +181,47 @@ class RegistrationController: UIViewController {
         present(imagePickerController, animated: true)
     }
     
-    @objc fileprivate func handleTextChange(textField: UITextField) {
-        // Handle text field changes for form validation
-        if nameTextField.text != "" && emailTextField.text != "" && passwordTextField.text != "" {
-            registerButton.isEnabled = true
-            registerButton.backgroundColor = #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1)
-        } else {
-            registerButton.isEnabled = false
-            registerButton.backgroundColor = .lightGray
-        }
-    }
+//    @objc fileprivate func handleTextChange(textField: UITextField) {
+//        // Handle text field changes for form validation
+//        registrationViewModel.fullName = nameTextField.text ?? ""
+//        registrationViewModel.email = emailTextField.text ?? ""
+//        registrationViewModel.password = passwordTextField.text ?? ""
+//        
+//        if nameTextField.text != "" && emailTextField.text != "" && passwordTextField.text != "" {
+//            registerButton.isEnabled = true
+//            registerButton.backgroundColor = #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1)
+//        } else {
+//            registerButton.isEnabled = false
+//            registerButton.backgroundColor = .lightGray
+//        }
+//    }
     
     @objc fileprivate func handleRegister() {
         // Implement registration logic
         print("Register button tapped")
+        guard let email = registrationViewModel.email else { return }
+        guard let password = registrationViewModel.password else { return }
+
+        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) {  authResult, error in
+            if let error = error {
+                print("Failed to register user:", error.localizedDescription)
+                self.setupJUD(error)
+                return
+            }
+            
+            print("Successfully registered user:", authResult?.user.email ?? "")
+            
+            // Navigate to home screen or next step
+        }
+
+    }
+    
+    fileprivate func setupJUD(_ err : Error) {
+        let hud = JGProgressHUD(style: .dark)
+        hud.textLabel.text = "Registration Failed"
+        hud.detailTextLabel.text = err.localizedDescription
+        hud.show(in: self.view)
+        hud.dismiss(afterDelay: 4.0)
     }
     
     @objc fileprivate func handleGoToLogin() {
