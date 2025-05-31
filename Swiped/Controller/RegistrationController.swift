@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseStorage
 import JGProgressHUD
 
 class RegistrationController: UIViewController {
@@ -145,13 +146,24 @@ class RegistrationController: UIViewController {
     let registrationViewModel = RegistrationViewModel()
     
     fileprivate func setupRegistrationViewModelObserver() {
-        registrationViewModel.isFormValidObserver = { [weak self] isFormValid in
-            guard let self = self else { return }
-            
-            print("Form is changing to", isFormValid)
-            self.registerButton.isEnabled = isFormValid
-            self.registerButton.backgroundColor = isFormValid ?
+        registrationViewModel.bindableIsFormValid.bind { [unowned self] isFormValid in
+            self.registerButton.isEnabled = isFormValid!
+            self.registerButton.backgroundColor = isFormValid ?? false ?
                 #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1) : .lightGray
+        }
+
+        
+        registrationViewModel.bindableImage.bind { [unowned self] img in
+            self.photoButton.setImage(img?.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        
+        registrationViewModel.bindableRegistering.bind { [unowned self] isRegistering in
+            if isRegistering == true {
+                self.registerHUD.textLabel.text = "Registering..."
+                self.registerHUD.show(in: self.view)
+            } else {
+                self.registerHUD.dismiss(animated: true)
+            }
         }
     }
 
@@ -181,42 +193,26 @@ class RegistrationController: UIViewController {
         present(imagePickerController, animated: true)
     }
     
-//    @objc fileprivate func handleTextChange(textField: UITextField) {
-//        // Handle text field changes for form validation
-//        registrationViewModel.fullName = nameTextField.text ?? ""
-//        registrationViewModel.email = emailTextField.text ?? ""
-//        registrationViewModel.password = passwordTextField.text ?? ""
-//        
-//        if nameTextField.text != "" && emailTextField.text != "" && passwordTextField.text != "" {
-//            registerButton.isEnabled = true
-//            registerButton.backgroundColor = #colorLiteral(red: 0.8980392157, green: 0, blue: 0.4470588235, alpha: 1)
-//        } else {
-//            registerButton.isEnabled = false
-//            registerButton.backgroundColor = .lightGray
-//        }
-//    }
+    let registerHUD = JGProgressHUD(style: .dark)
     
     @objc fileprivate func handleRegister() {
         // Implement registration logic
         print("Register button tapped")
-        guard let email = registrationViewModel.email else { return }
-        guard let password = registrationViewModel.password else { return }
 
-        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) {  authResult, error in
-            if let error = error {
-                print("Failed to register user:", error.localizedDescription)
-                self.setupJUD(error)
+        registrationViewModel.registerUser {[weak self] error in
+            if let err = error {
+                self?.setupJUD(err)
                 return
             }
             
-            print("Successfully registered user:", authResult?.user.email ?? "")
-            
-            // Navigate to home screen or next step
+            print("Successfully registered user")
         }
+       
 
     }
     
     fileprivate func setupJUD(_ err : Error) {
+        registerHUD.dismiss(animated: true)
         let hud = JGProgressHUD(style: .dark)
         hud.textLabel.text = "Registration Failed"
         hud.detailTextLabel.text = err.localizedDescription
@@ -261,7 +257,9 @@ class RegistrationController: UIViewController {
 extension RegistrationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         let selectedImage = info[.originalImage] as? UIImage
-        photoButton.setImage(selectedImage?.withRenderingMode(.alwaysOriginal), for: .normal)
+        registrationViewModel.bindableImage.value = selectedImage
+//        registrationViewModel.image = selectedImage
+       
         photoButton.setTitle("", for: .normal)
         dismiss(animated: true)
     }
