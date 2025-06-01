@@ -4,6 +4,8 @@
 //
 //  Created by Nitin on 30/05/25.
 //
+
+
 // yeh didset ka kya use hota hai > jab bhi koi value change hoti hai, yeh observer ko call karega yeh image observer hai, jo image change hone par call hota hai
 import Foundation
 import UIKit
@@ -75,7 +77,7 @@ class RegistrationViewModel {
                 self.bindableRegistering.value = false
                 guard let profileImageUrl = url?.absoluteString else { return }
                 print("DEBUG : Download URL of image is \(profileImageUrl)")
-                self.saveInfoToFirestore(completion: completion)
+                self.saveInfoToFirestore(imageUrl: profileImageUrl, completion: completion)
                 
             }
         }
@@ -83,13 +85,13 @@ class RegistrationViewModel {
         
     }
     
-    fileprivate func saveInfoToFirestore(completion : @escaping (Error?) -> Void) {
+    fileprivate func saveInfoToFirestore(imageUrl : String , completion : @escaping (Error?) -> Void) {
         
         Firestore.firestore().collection("users").document(FirebaseAuth.Auth.auth().currentUser?.uid ?? "").setData([
             "fullName" : fullName ?? "",
             "uid" : Auth.auth().currentUser?.uid ?? "",
             "email" : email ?? "",
-            "imageUrl1" : bindableImage.value?.jpegData(compressionQuality: 0.75)?.base64EncodedString() ?? ""
+            "imageUrl1" : imageUrl,
         ]) { error in
             if let error = error {
                 completion(error)

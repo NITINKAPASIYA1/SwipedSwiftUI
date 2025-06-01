@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class CardView: UIView {
     
@@ -19,8 +20,9 @@ class CardView: UIView {
     
     var cardViewModel : CardViewModel! {
         didSet {
-            let imageName = cardViewModel.imageNames.first ?? ""
-            imageView.image = UIImage(named: imageName)
+            if let url = URL(string: cardViewModel.imageNames.first ?? "") {
+                imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+            }
             informationLabel.attributedText = cardViewModel.attributedString
             informationLabel.textAlignment = cardViewModel.textAlignment
             

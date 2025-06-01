@@ -91,6 +91,7 @@ class RegistrationController: UIViewController {
         setupRegistrationViewModelObserver()
     }
     
+    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         gradientLayer.frame = view.bounds
@@ -184,6 +185,8 @@ class RegistrationController: UIViewController {
     fileprivate func setupTapGesture() {
         view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTapDismiss)))
     }
+    
+    
     
     // MARK: - Actions
     
