@@ -23,6 +23,9 @@ class CardView: UIView {
             if let url = URL(string: cardViewModel.imageNames.first ?? "") {
                 imageView.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
             }
+            else {
+                imageView.image = UIImage(named: "placeholder")
+            }
             informationLabel.attributedText = cardViewModel.attributedString
             informationLabel.textAlignment = cardViewModel.textAlignment
             
