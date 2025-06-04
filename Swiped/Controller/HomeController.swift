@@ -50,7 +50,6 @@ class HomeController: UIViewController {
             documents.forEach { (doc) in
                 let userDictionary = doc.data()
                 let user = User(dictionary: userDictionary)
-                print(user.name ?? "No Name")
 //                print(user.imageNames)
                 self.cardViewModel.append(user.toCardViewModel())
             }
