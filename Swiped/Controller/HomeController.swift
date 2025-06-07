@@ -30,7 +30,7 @@ class HomeController: UIViewController {
         view.backgroundColor = .white
         super.viewDidLoad()
         setupLayout()
-        setupDummyCards()
+        setupFirestoreUserCards()
         topStackView.settingsButton.addTarget(self, action: #selector(handleSettings), for: .touchUpInside)
         fetchUsersfromFirestore()
     }
@@ -38,8 +38,8 @@ class HomeController: UIViewController {
     //MARK: FilePrivate
     
     @objc fileprivate func fetchUsersfromFirestore() {
-        Firestore.firestore().collection("users").getDocuments { snapshot, error in
-            
+        let query = Firestore.firestore().collection("users").whereField("age", isLessThan: 31)
+        query.getDocuments { snapshot, error in
             if let error = error {
                 print("Failed to fetch users:", error)
                 return
@@ -52,7 +52,7 @@ class HomeController: UIViewController {
                 let user = User(dictionary: userDictionary)
                 self.cardViewModel.append(user.toCardViewModel())
             }
-            self.setupDummyCards()
+            self.setupFirestoreUserCards()
         }
     
 
@@ -66,7 +66,7 @@ class HomeController: UIViewController {
         
     }
     
-    fileprivate func setupDummyCards() {
+    fileprivate func setupFirestoreUserCards() {
         
         cardViewModel.forEach { value in
             let cardView = CardView(frame: .zero)
